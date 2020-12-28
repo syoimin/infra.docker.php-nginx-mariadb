@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  app:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: ./dockerfiles/app/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - app-data:/var/www/application
+    networks:
+      - container_network
+    depends_on:
+      - "db"
+  web:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: ./dockerfiles/web/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - container_network
+    volumes:
+      - app-data:/var/www/application
+    depends_on:
+      - "app"
+
+###### 開発用 コンテナ ######
+  node:
+    image: node:8.12.0-alpine
+    networks:
+      - container_network
+    volumes:
+      - app-data:/var/www/application
+    command: /bin/sh -c "cd /var/www/application && npm install && npm run watch-poll"
+    depends_on:
+      - "web"
+  db:
+    ports:
+      - "3306:3306"
+    build:
+      context: .
+      dockerfile: ./dockerfiles/db/Dockerfile
+    environment:
+      MYSQL_DATABASE: sampledb
+      MYSQL_USER: sample_user
+      MYSQL_PASSWORD: 12345678
+      MYSQL_ROOT_PASSWORD: 12345678
+    networks:
+      - container_network
+    volumes:
+      - ./db_data:/var/lib/mysql
+  redis:
+    image: redis:4.0
+    ports:
+      - "6379:6379"
+    networks:
+      - container_network
+
+###### 開発用ネットワーク・ボリューム ########
+networks:
+  container_network:
+
+volumes:
+  app-data:
+    driver_opts:
+      type: none
+      device: $PWD/application
+      o: bind

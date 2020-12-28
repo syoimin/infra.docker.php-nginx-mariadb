@@ -1,0 +1,11 @@
+/application/node_modules
+/application/public/hot
+/application/public/storage
+/application/storage/*.key
+/application/vendor
+/application/.env
+/application/.env.backup
+/application/.phpunit.result.cache
+/application/yarn-error.log
+.DS_Store
+/db_data
