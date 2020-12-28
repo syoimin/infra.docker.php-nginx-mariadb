@@ -1,6 +1,6 @@
 FROM nginx:1.15.5-alpine
 
-LABEL MAINTAINER="shiomi.yuji@showcase-tv.com”
+LABEL MAINTAINER="syoimin.server@gmail.com"
 
 # ensure www-data user exists
 RUN set -x \

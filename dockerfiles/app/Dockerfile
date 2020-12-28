@@ -1,6 +1,6 @@
 FROM node:14.15.1-alpine
 
-LABEL MAINTAINER="shoimin.server@gmail.com"
+LABEL MAINTAINER="syoimin.server@gmail.com"
 
 WORKDIR /var
 COPY ./public ./public
