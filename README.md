@@ -1,4 +1,4 @@
-# 1 Docker 環境の構築
+# 1 Docker 環境の構築 (PHP の依存パッケージは Laravel 想定)
 ### 1.1 MacOS の場合
 Docker for Mac をインストール
 
