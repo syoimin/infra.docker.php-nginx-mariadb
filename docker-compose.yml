@@ -1,5 +1,4 @@
-version: '3'
-
+version: "3"
 services:
   app:
     env_file: .env
@@ -9,11 +8,14 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - app-data:/var/www/application
+      - app-data:/var/www/application:cached
+      - ~/.aws:/root/.aws
+      - ~/.aws:/home/www-data/.aws
     networks:
       - container_network
     depends_on:
       - "db"
+
   web:
     env_file: .env
     build:
@@ -24,20 +26,23 @@ services:
     networks:
       - container_network
     volumes:
-      - app-data:/var/www/application
+      - app-data:/var/www/application:cached
     depends_on:
       - "app"
 
-###### 開発用 コンテナ ######
   node:
-    image: node:8.12.0-alpine
-    networks:
-      - container_network
+    image: node:12.16.2-alpine
+    # networks:
+    #   container_network:
+    #     ipv4_address: "192.168.240.5"
+    ports:
+      - "3000:3000"
     volumes:
-      - app-data:/var/www/application
-    command: /bin/sh -c "cd /var/www/application && npm install && npm run watch-poll"
+      - app-data:/var/www/application:cached
+    command: /bin/sh -c "cd /var/www/application && npm install && npm run dev"
     depends_on:
       - "web"
+
   db:
     ports:
       - "3306:3306"
@@ -63,10 +68,14 @@ services:
 ###### 開発用ネットワーク・ボリューム ########
 networks:
   container_network:
-
+    driver: bridge
+    # ipam:
+    #   driver: default
+    #   config:
+    #     - subnet: 192.168.240.0/24
 volumes:
   app-data:
     driver_opts:
       type: none
-      device: $PWD/application
+      device: $PWD
       o: bind
