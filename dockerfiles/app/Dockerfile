@@ -1,25 +1,25 @@
-FROM node:8.12.0-alpine
+FROM node:14.15.1-alpine
 
-MAINTAINER syoimin.server@gmail.com
+LABEL MAINTAINER="shoimin.server@gmail.com"
 
 WORKDIR /var
-
-COPY ./application/public ./public
-COPY ./application/resources ./resources
-COPY ./application/webpack.mix.js ./webpack.mix.js
-COPY ./application/package.json ./package.json
-COPY ./application/package-lock.json ./package-lock.json
-
+COPY ./public ./public
+COPY ./resources ./resources
+COPY ./webpack.mix.js ./webpack.mix.js
+COPY ./webpack.config.js ./webpack.config.js
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
 RUN rm -rf ./node_modules \
   && npm install \
   && npm run production
 
 FROM php:7.4.2-fpm-alpine
 
-MAINTAINER syoimin.server@gmail.com
+LABEL MAINTAINER="shoimin.server@gmail.com"
 
 WORKDIR /tmp
-
+ARG pip_installer="https://bootstrap.pypa.io/get-pip.py"
+ARG awscli_version="1.16.300"
 # Laravel 必須ライブラリのインストール
 RUN apk add --no-cache \
   unzip \
@@ -27,25 +27,34 @@ RUN apk add --no-cache \
   mysql-client \
   tzdata \
   oniguruma-dev \
+  bash \
+  python \
+  curl \
+  groff \
+  jq \
+  less \
+  libpng-dev \
   # php 拡張パッケージインストール
   && /usr/local/bin/docker-php-ext-install \
   mbstring \
   pdo_mysql \
   xml \
   exif \
+  gd \
   # exif のコンパイルオプション設定
   && docker-php-ext-enable exif \
   # composer のインストール
   && curl -sS https://getcomposer.org/installer | php \
   && mv composer.phar /usr/local/bin/composer
-
+# Install awscli
+RUN curl ${pip_installer} | python && \
+  pip install awscli==${awscli_version}
 WORKDIR /var/www
 
 ## 環境変数を定義
 #
 # PROJECT_FOLDER_ADMIN: admin 用ディレクトリ
 ##
-
 ENV PROJECT_FOLDER_ADMIN application
 
 # composer root 許可
@@ -58,7 +67,7 @@ RUN mkdir -p $PROJECT_FOLDER_ADMIN
 WORKDIR /var/www/$PROJECT_FOLDER_ADMIN
 
 # ドキュメントルートの転送
-COPY ./application/ ./
+COPY ./ ./
 
 # compoer install
 RUN composer install
