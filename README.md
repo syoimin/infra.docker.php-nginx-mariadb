@@ -1,8 +1,8 @@
 # 1 Docker 環境の構築
-### 1.1 MacOSの方
+### 1.1 MacOS の場合
 Docker for Mac をインストール
 
-### 1.2 vagrant + CentOS7 の方
+### 1.2 vagrant + CentOS7 の場合
 OS バージョン：CentOS7.x  
 Docker バージョン：18.06.1.ce-3.el7  
 docker-compose バージョン：1.22.0  
@@ -35,7 +35,7 @@ docker-compose バージョン：1.22.0
 
 8. Docker の確認  
 `# docker run hello-world`  
-下記内容が出力されればOK  
+下記内容が出力されれば OK  
 
 ```
 Unable to find image 'hello-world:latest' locally
@@ -102,9 +102,4 @@ Linux 用の Docker を利用した場合起こる仕様です。Docker for Mac 
 composer と npm で作成された node_module, vendoer は手動で編集しないでください。  
 そのほかの git で管理されているファイルは必ずホストサーバのファイルを編集してください。
 
-
-## 4 その他
-ホストボリュームにマウントされていない状態のイメージを確認したい場合
-docker run -rm -it --name <コンテナ名> --env-file env.list <イメージ名>:latest
-docker run -rm -it --name <コンテナ名> --env-file env.list <イメージ名>:latest 
 
