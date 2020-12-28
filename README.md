@@ -102,4 +102,9 @@ Linux 用の Docker を利用した場合起こる仕様です。Docker for Mac 
 composer と npm で作成された node_module, vendoer は手動で編集しないでください。  
 そのほかの git で管理されているファイルは必ずホストサーバのファイルを編集してください。
 
+## 4. その他
+Nginx config 設定参考
+
+https://www.digitalocean.com/community/tools/nginx
+
 
